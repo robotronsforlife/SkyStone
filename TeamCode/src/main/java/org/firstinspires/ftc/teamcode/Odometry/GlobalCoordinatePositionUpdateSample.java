@@ -12,7 +12,9 @@ import org.firstinspires.ftc.teamcode.Odometry.OdometryGlobalCoordinatePosition;
  */
 @TeleOp(name = "Global Coordinate Position Test", group = "Calibration")
 public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
-
+    //globalPositionUpdate.reverseRightEncoder();
+    //globalPositionUpdate.reverseLeftEncoder();
+    //globalPositionUpdate.reverseNormalEncoder();
     //Odometry encoder wheels
     DcMotor verticalRight, verticalLeft, horizontal;
 
@@ -20,11 +22,14 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
     final double COUNTS_PER_INCH = 307.699557;
 
     //Hardware map names for the encoder wheels. Again, these will change for each robot and need to be updated below
-    String verticalLeftEncoderName = "rf", verticalRightEncoderName = "lf", horizontalEncoderName = "lb";
+    String rfName = "Right_Front_Wheel", rbName = "Right_Rear_Wheel", lfName = "Left_Front_Wheel", lbName = "Left_Rear_Wheel";
+    String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rbName;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        //globalPositionUpdate.reverseRightEncoder();
+        // globalPositionUpdate.reverseLeftEncoder();
+        //globalPositionUpdate.reverseNormalEncoder();
         //Assign the hardware map to the odometry wheels
         verticalLeft = hardwareMap.dcMotor.get(verticalLeftEncoderName);
         verticalRight = hardwareMap.dcMotor.get(verticalRightEncoderName);
@@ -40,9 +45,9 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
         such that when the verticalLeft and verticalRight encoders spin forward, they return positive values, and when the
         horizontal encoder travels to the right, it returns positive value
         */
-        verticalLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        verticalRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        horizontal.setDirection(DcMotorSimple.Direction.REVERSE);
+        // verticalLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        // verticalRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        // horizontal.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Set the mode of the odometry encoders to RUN_WITHOUT_ENCODER
         verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -65,11 +70,20 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
+        //globalPositionUpdate.reverseRightEncoder();
+        // globalPositionUpdate.reverseLeftEncoder();
+         //globalPositionUpdate.reverseNormalEncoder();
+
         while(opModeIsActive()){
             //Display Global (x, y, theta) coordinates
             telemetry.addData("X Position", globalPositionUpdate.returnXCoordinate() / COUNTS_PER_INCH);
             telemetry.addData("Y Position", globalPositionUpdate.returnYCoordinate() / COUNTS_PER_INCH);
             telemetry.addData("Orientation (Degrees)", globalPositionUpdate.returnOrientation());
+
+            telemetry.addData("Vertical left encoder position", verticalLeft.getCurrentPosition());
+            telemetry.addData("Vertical right encoder position", verticalRight.getCurrentPosition());
+            telemetry.addData("Horizontal encoder position", horizontal.getCurrentPosition());
+
             telemetry.addData("Thread Active", positionThread.isAlive());
             telemetry.update();
         }

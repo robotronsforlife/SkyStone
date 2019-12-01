@@ -28,10 +28,9 @@ public class OdometryCalibration extends LinearOpMode {
     //IMU Sensor
     BNO055IMU imu;
 
-
     //Hardware Map Names for drive motors and odometry wheels. THIS WILL CHANGE ON EACH ROBOT, YOU NEED TO UPDATE THESE VALUES ACCORDINGLY
-    String rfName = "Right Front Motor", rbName = "Right Back Motor", lfName = "Left Front Motor", lbName = "Left Back Motor";
-    String verticalLeftEncoderName = rbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
+    String rfName = "Right_Front_Wheel", rbName = "Right_Rear_Wheel", lfName = "Left_Front_Wheel", lbName = "Left_Rear_Wheel";
+    String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rbName;
 
     final double PIVOT_SPEED = 0.5;
 
@@ -105,11 +104,8 @@ public class OdometryCalibration extends LinearOpMode {
         THIS MAY NEED TO BE CHANGED FOR EACH ROBOT
        */
         double encoderDifference = Math.abs(verticalLeft.getCurrentPosition()) + (Math.abs(verticalRight.getCurrentPosition()));
-
         double verticalEncoderTickOffsetPerDegree = encoderDifference/angle;
-
         double wheelBaseSeparation = (2*90*verticalEncoderTickOffsetPerDegree)/(Math.PI*COUNTS_PER_INCH);
-
         horizontalTickOffset = horizontal.getCurrentPosition()/Math.toRadians(getZAngle());
 
         //Write the constants to text files
@@ -124,7 +120,7 @@ public class OdometryCalibration extends LinearOpMode {
 
             //Display raw values
             telemetry.addData("IMU Angle", getZAngle());
-            telemetry.addData("Vertical Left Position", -verticalLeft.getCurrentPosition());
+            telemetry.addData("Vertical Left Position", verticalLeft.getCurrentPosition());
             telemetry.addData("Vertical Right Position", verticalRight.getCurrentPosition());
             telemetry.addData("Horizontal Position", horizontal.getCurrentPosition());
             telemetry.addData("Vertical Encoder Offset", verticalEncoderTickOffsetPerDegree);
@@ -138,6 +134,7 @@ public class OdometryCalibration extends LinearOpMode {
         right_front = hardwareMap.dcMotor.get(rfName);
         right_back = hardwareMap.dcMotor.get(rbName);
         left_front = hardwareMap.dcMotor.get(lfName);
+
         left_back = hardwareMap.dcMotor.get(lbName);
 
         verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
@@ -162,7 +159,6 @@ public class OdometryCalibration extends LinearOpMode {
         verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         right_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -172,11 +168,8 @@ public class OdometryCalibration extends LinearOpMode {
         right_front.setDirection(DcMotorSimple.Direction.REVERSE);
         right_back.setDirection(DcMotorSimple.Direction.REVERSE);
 
-
-
         telemetry.addData("Status", "Hardware Map Init Complete");
         telemetry.update();
-
     }
 
     /**
@@ -200,5 +193,4 @@ public class OdometryCalibration extends LinearOpMode {
         left_front.setPower(lf);
         left_back.setPower(lb);
     }
-
 }
