@@ -27,7 +27,7 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //globalPositionUpdate.reverseRightEncoder();
+        // globalPositionUpdate.reverseRightEncoder();
         // globalPositionUpdate.reverseLeftEncoder();
         //globalPositionUpdate.reverseNormalEncoder();
         //Assign the hardware map to the odometry wheels
@@ -70,8 +70,8 @@ public class GlobalCoordinatePositionUpdateSample extends LinearOpMode {
         Thread positionThread = new Thread(globalPositionUpdate);
         positionThread.start();
 
-        //globalPositionUpdate.reverseRightEncoder();
-        // globalPositionUpdate.reverseLeftEncoder();
+        globalPositionUpdate.reverseRightEncoder();
+        globalPositionUpdate.reverseLeftEncoder();
          //globalPositionUpdate.reverseNormalEncoder();
 
         while(opModeIsActive()){
