@@ -17,10 +17,10 @@ public class Robot {
 
     OdometryGlobalCoordinatePosition globalPositionUpdate;
 
-    private DcMotor Right_Front_Wheel;
-    private DcMotor Left_Front_Wheel;
-    private DcMotor Right_Rear_Wheel;
-    private DcMotor Left_Rear_Wheel;
+    public DcMotor Right_Front_Wheel;
+    public DcMotor Left_Front_Wheel;
+    public DcMotor Right_Rear_Wheel;
+    public DcMotor Left_Rear_Wheel;
 
     //Odometry Wheels
     private DcMotor verticalLeft;
