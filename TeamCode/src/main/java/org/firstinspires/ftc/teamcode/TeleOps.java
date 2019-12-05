@@ -26,7 +26,7 @@ public class TeleOps extends LinearOpMode {
     public void runOpMode() {
 
         robot = new Robot();
-        robot.Init(hardwareMap);
+        robot.Init(hardwareMap, telemetry);
 
         waitForStart();
         if (opModeIsActive()) {
