@@ -79,6 +79,19 @@ public class BaseMoverTest extends LinearOpMode {
             }
 
             robot.Stop();
+            ElapsedTime2.reset();
+            while(!(ElapsedTime2.milliseconds()>1000 || isStopRequested())){
+                robot.Slide_Left((float)0.5);
+                robot.Right((float)0.5);
+                sleep(200);
+
+            }
+            robot.Stop();
+            ElapsedTime2.reset();
+            while(!(ElapsedTime2.milliseconds()>1000 || isStopRequested())){
+                robot.Reverse((float)0.5);
+            }
+            robot.Stop();
         }
     }
 
