@@ -87,10 +87,10 @@ public class Robot {
         verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        Right_Front_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Right_Rear_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Left_Front_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Left_Rear_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        Right_Front_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        Right_Rear_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        Left_Front_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        Left_Rear_Wheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         Right_Front_Wheel.setDirection(DcMotorSimple.Direction.REVERSE);
         Right_Rear_Wheel.setDirection(DcMotorSimple.Direction.REVERSE);

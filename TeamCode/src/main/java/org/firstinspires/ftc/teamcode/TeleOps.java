@@ -42,8 +42,7 @@ public class TeleOps extends LinearOpMode {
                 else if(Math.abs(gamepad1.left_stick_y) < Math.abs((gamepad1.left_stick_x))){
                     if(gamepad1.left_stick_x > 0){
                         robot.Right(Math.abs(gamepad1.left_stick_x));
-               }
-                    else if (gamepad1.left_stick_x < 0){
+               } else if (gamepad1.left_stick_x < 0){
                         robot.Left(Math.abs(gamepad1.left_stick_x));
                     }
                 }
@@ -61,7 +60,6 @@ public class TeleOps extends LinearOpMode {
                     else{
                         robot.Diagonal_Left_Up(Math.abs(gamepad1.right_stick_y));
                     }
-
                 }
                 else if(gamepad1.right_stick_x < 0 && gamepad1.right_stick_y > 0){
                     if(Math.abs(gamepad1.right_stick_x) >= Math.abs(gamepad1.right_stick_y)){
@@ -79,7 +77,6 @@ public class TeleOps extends LinearOpMode {
                     else{
                         robot.Diagonal_Right_Up(Math.abs(gamepad1.right_stick_y));
                     }
-
                 }
                 else if(gamepad1.right_stick_x > 0 && gamepad1.right_stick_y > 0){
                     if(Math.abs(gamepad1.right_stick_x) >= Math.abs(gamepad1.right_stick_y)){
@@ -88,7 +85,6 @@ public class TeleOps extends LinearOpMode {
                     else{
                         robot.Diagonal_Right_Down(Math.abs(gamepad1.right_stick_y));
                     }
-
                 }
                 else{
                     if(gamepad1.right_stick_x == 0 && gamepad1.right_stick_y == 0){
