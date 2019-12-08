@@ -17,8 +17,13 @@ import org.firstinspires.ftc.teamcode.Robotron.Robot;
 @TeleOp(name = "TeleOps Test", group = "")
 public class TeleOps extends LinearOpMode {
 
+
     private Robot robot;
 
+    double Elbow1TickCount = 5264 * 2 ;
+    double Elbow2TickCount = (5264 * 2) / 360 ;
+    double Elbow3TickCount = 5264 * 2 ;
+    double Elbow4TickCount = (2786 * 2) / 360 ;
     /**
      * This function is executed when this Op Mode is selected from the Driver Station.
      */
@@ -29,6 +34,8 @@ public class TeleOps extends LinearOpMode {
         robot.Init(hardwareMap, telemetry);
 
         waitForStart();
+
+        int currentElbow2TargetPosition = robot.Elbow2.getCurrentPosition();
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 //This one takes care of Forward , Reverse, Right and Left
@@ -129,12 +136,21 @@ public class TeleOps extends LinearOpMode {
                     robot.RightPuller(0);
                 }
 
+                //Arm Position Code is Here
+
+
                 // Arm Code is Here
                 if(gamepad2.dpad_up){
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     robot.MoveElbow1(1);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                 }
-                else if(gamepad2.dpad_down){
+                else if(gamepad2.dpad_down) {
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     robot.MoveElbow1(-1);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                 }
                 else if(gamepad2.left_stick_y<0){
                     robot.MoveElbow2(Math.abs(gamepad2.left_stick_y));
@@ -154,6 +170,84 @@ public class TeleOps extends LinearOpMode {
                 else if(gamepad2.a){
                     robot.MoveElbow4(0.5);
                 }
+
+                else if (gamepad2.x){
+                    //Elbow2 Operation Below
+
+                    double Elbow2Turn = Elbow2TickCount  * 130;
+                    int newTargetElbow2 = (int)Elbow2Turn;
+                    robot.Elbow2.setTargetPosition(newTargetElbow2);
+                    robot.Elbow2.setPower(1);
+                    robot.Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    while (opModeIsActive() && robot.Elbow2.isBusy()){
+                        telemetry.addData("In side While Arm Position", robot.Elbow2.getTargetPosition());
+                        telemetry.update();
+                        idle();
+                    }
+
+                    robot.Elbow2.setPower(0);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                    //Griper Opener
+                    robot.Gripper(1);
+                    sleep(900);
+                    robot.Gripper(0);
+
+                    // Elbow 4
+                    double Elbow4Turn = Elbow4TickCount * 130;
+                    robot.Elbow4.setTargetPosition((int)Elbow4Turn);
+                    robot.Elbow4.setPower(-1);
+                    robot.Elbow4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.Elbow4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    while (robot.Elbow4.isBusy()){
+                        telemetry.addData("Arm Position", robot.Elbow4.getTargetPosition());
+                        telemetry.update();
+                        idle();
+                    }
+                    robot.Elbow4.setPower(0);
+                    robot.Elbow4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                    double Elbow2Turn_1 = Elbow2TickCount  * 40;
+                    int newTargetElbow2_1 = (int)Elbow2Turn_1;
+                    robot.Elbow2.setTargetPosition(newTargetElbow2_1);
+                    robot.Elbow2.setPower(1);
+                    robot.Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    while (opModeIsActive() && robot.Elbow2.isBusy()){
+                        telemetry.addData("In side While Arm Position", robot.Elbow2.getTargetPosition());
+                        telemetry.update();
+                        idle();
+                    }
+
+                    robot.Elbow2.setPower(0);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+                }
+
+                else if (gamepad2.b) {
+                    //Elbow2 Operation Below
+
+                    double Elbow2Turn = Elbow2TickCount * 170;
+                    int newTargetElbow2 = (int) Elbow2Turn;
+                    robot.Elbow2.setTargetPosition(-newTargetElbow2);
+                    robot.Elbow2.setPower(-1);
+                    robot.Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                    while (opModeIsActive() && robot.Elbow2.isBusy()) {
+                        telemetry.addData("In side While Arm Position", robot.Elbow2.getTargetPosition());
+                        telemetry.update();
+                        idle();
+                    }
+
+                    robot.Elbow2.setPower(0);
+                    robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+
                 else{
                     robot.MoveElbow1(0);
                     robot.MoveElbow2(0);
