@@ -47,24 +47,38 @@ public class BaseMoverTest extends LinearOpMode {
             robot.LeftPuller(0);
 
             ElapsedTime2.reset();
-            while (!(ElapsedTime2.milliseconds() >= 250 || isStopRequested())) {
+            while (!(ElapsedTime2.milliseconds() >= 400 || isStopRequested())) {
                 robot.Slide_Right((float) 0.5);
             }
 
             robot.Stop();
 
             ElapsedTime2.reset();
-            while (!(ElapsedTime2.milliseconds() >= 600 || isStopRequested())) {
+            while (!(ElapsedTime2.milliseconds() >= 1300 || isStopRequested())) {
                 robot.Forward((float) 0.2);
             }
 
             robot.Stop();
 
             ElapsedTime2.reset();
+            while (!(ElapsedTime2.milliseconds() >= 400 || isStopRequested())) {
+                robot.Forward((float) 0.2);
+            }
+
+            ElapsedTime2.reset();
             while (!(ElapsedTime2.milliseconds() >= 1000 || isStopRequested())) {
                 robot.RightPuller(-1);
                 robot.LeftPuller(-1);
+            }
 
+            robot.RightPuller(0);
+            robot.LeftPuller(0);
+
+            robot.Stop();
+
+            ElapsedTime2.reset();
+            while (!(ElapsedTime2.milliseconds() >= 2500 || isStopRequested())) {
+                MoveRobot(false);
                 // Wait 1/5 second before checking again.
                 sleep(200);
             }
@@ -72,7 +86,29 @@ public class BaseMoverTest extends LinearOpMode {
             robot.Stop();
 
             ElapsedTime2.reset();
-            while (!(ElapsedTime2.milliseconds() >= 2500 || isStopRequested())) {
+            while (!(ElapsedTime2.milliseconds() >= 2000 || isStopRequested())) {
+                robot.Slide_Left((float) 0.3);
+                robot.Right((float) 0.4);
+            }
+            robot.Stop();
+
+            ElapsedTime2.reset();
+            while (!(ElapsedTime2.milliseconds() >= 800 || isStopRequested())) {
+                MoveRobot(true);
+                // Wait 1/5 second before checking again.
+                sleep(200);
+            }
+            robot.Stop();
+
+            ElapsedTime2.reset();
+            while (!(ElapsedTime2.milliseconds() >= 1000 || isStopRequested())) {
+                robot.RightPuller(1);
+                robot.LeftPuller(1);
+            }
+
+
+            ElapsedTime2.reset();
+            while (!(ElapsedTime2.milliseconds() >= 2000 || isStopRequested())) {
                 MoveRobot(false);
                 // Wait 1/5 second before checking again.
                 sleep(200);

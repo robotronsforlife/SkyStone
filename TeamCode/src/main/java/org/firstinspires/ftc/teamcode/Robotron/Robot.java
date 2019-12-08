@@ -178,10 +178,10 @@ public class Robot {
         Turn_Servo = hardwareMap.crservo.get("Turn_Servo");
         Grip_Servo = hardwareMap.crservo.get("Grip_Servo");
 
-        Elbow1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+/*        Elbow1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Elbow3.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        Elbow4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Elbow4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
 
         //Create and start GlobalCoordinatePosition thread to constantly update the global coordinate positions
         globalPositionUpdate = new OdometryGlobalCoordinatePosition(verticalLeft, verticalRight, horizontal, COUNTS_PER_INCH, 75);
