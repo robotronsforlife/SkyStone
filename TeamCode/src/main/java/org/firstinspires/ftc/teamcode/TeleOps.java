@@ -31,7 +31,7 @@ public class TeleOps extends LinearOpMode {
     public void runOpMode() {
 
         robot = new Robot();
-        robot.Init(hardwareMap, telemetry);
+        robot.Init(hardwareMap, telemetry, false);
 
         waitForStart();
 
@@ -48,6 +48,7 @@ public class TeleOps extends LinearOpMode {
                 }
                 else if(Math.abs(gamepad1.left_stick_y) < Math.abs((gamepad1.left_stick_x))){
                     if(gamepad1.left_stick_x > 0){
+
                         robot.Right(Math.abs(gamepad1.left_stick_x));
                } else if (gamepad1.left_stick_x < 0){
                         robot.Left(Math.abs(gamepad1.left_stick_x));
@@ -151,6 +152,18 @@ public class TeleOps extends LinearOpMode {
                     robot.MoveElbow1(-1);
                     robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+                }
+                else if(gamepad2.dpad_left){
+                    //NUMBER GOES DOWN
+                    robot.State--;
+                    telemetry.addData("State:", robot.State);
+                    telemetry.update();
+                }
+                else if(gamepad2.dpad_right){
+                    //NUMBER GOES UP
+                    robot.State++;
+                    telemetry.addData("State:", robot.State);
+                    telemetry.update();
                 }
                 else if(gamepad2.left_stick_y<0){
                     robot.MoveElbow2(Math.abs(gamepad2.left_stick_y));

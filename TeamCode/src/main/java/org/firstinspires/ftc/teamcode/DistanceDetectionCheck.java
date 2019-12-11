@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -90,10 +91,17 @@ public class DistanceDetectionCheck extends LinearOpMode {
     private Robot robot;
     private boolean targetVisible = false;
     private OpenGLMatrix lastLocation = null;
+    double Elbow1TickCount = 5264 * 2;
+    double Elbow2TickCount = (5264 * 2) / 360;
+    double Elbow3TickCount = 5264 * 2;
+    double Elbow4TickCount = (2786 * 2) / 360;
+    int placeholder = 1;
 
-    @Override public void runOpMode() {
+
+    @Override
+    public void runOpMode() {
         robot = new Robot();
-        robot.Init(hardwareMap, telemetry);
+        robot.Init(hardwareMap, telemetry, false);
 
         // WARNING:
         // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
@@ -107,12 +115,20 @@ public class DistanceDetectionCheck extends LinearOpMode {
         // AFTER you hit Init on the Driver Station, use the "options menu" to select "Camera Stream"
         // Tap the preview window to receive a fresh image.
 
-       waitForStart();
+        waitForStart();
 
         if (opModeIsActive()) {
+            //move 180 turn servo
+            robot.TurnGripper(-1);
+            sleep(700);
+            robot.TurnGripper(0);
+
             robot.Forward((float) 1);
             sleep(390);
             robot.Stop();
+
+
+
             boolean first = true;
             while (!isStopRequested()) {
 
@@ -136,13 +152,13 @@ public class DistanceDetectionCheck extends LinearOpMode {
                 // Provide feedback as to where the robot is located (if we know).
                 if (!targetVisible) {
                     telemetry.addData("Visible Target", "none");
-                    robot.Slide_Left((float)0.25);
+                    robot.Slide_Left((float) 0.25);
                     sleep(200);
-                    robot.Right((float)0.1);
+                    robot.Right((float) 0.1);
                     sleep(10);
                     robot.Stop();
                     sleep(100);
-
+                    placeholder+=1;
                 } else if (targetVisible) {
                     // express position (translation) of robot in inches.
                     robot.Stop();
@@ -153,11 +169,12 @@ public class DistanceDetectionCheck extends LinearOpMode {
                     telemetry.addData("Found", "skystone");
                     // express the rotation of the robot in degrees.
                     Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-                  //  telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-                    if(translation.get(1) < 0 && first){
-                        robot.Slide_Left((float)0.25);
+                    //  telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
+
+                    if (translation.get(1) < 0 && first) {
+                        robot.Slide_Left((float) 0.25);
                         sleep(150);
-                        robot.Right((float)0.1);
+                        robot.Right((float) 0.1);
                         sleep(10);
                         robot.Stop();
                         sleep(100);
@@ -166,8 +183,7 @@ public class DistanceDetectionCheck extends LinearOpMode {
                         telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                                 translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
 
-                    }
-                    else {
+                    } else {
 
                         if (first) {
                             robot.Left((float) 0.2);
@@ -183,16 +199,143 @@ public class DistanceDetectionCheck extends LinearOpMode {
                             telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
                                     translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);
                             first = false;
+
+
+                            // this should make the robot move backward 11 inches I hope
+                            robot.Reverse(-1);
+                            sleep(250);
+                            //if required do correction here
+                            //I am extending the arm with the x function
+                            double Elbow2Turn = Elbow2TickCount * 130;
+                            int newTargetElbow2 = (int) Elbow2Turn;
+                            robot.Elbow2.setTargetPosition(newTargetElbow2);
+                            robot.Elbow2.setPower(1);
+                            robot.Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            robot.Elbow2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            while (opModeIsActive() && robot.Elbow2.isBusy()) {
+                                telemetry.addData("In side While Arm Position", robot.Elbow2.getTargetPosition());
+                                telemetry.update();
+                                idle();
+                            }
+
+                            robot.Elbow2.setPower(0);
+                            robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                            //Griper Opener
+                            robot.Gripper(1);
+                            sleep(900);
+                            robot.Gripper(0);
+
+                            // Elbow 4
+                            double Elbow4Turn = Elbow4TickCount * 130;
+                            robot.Elbow4.setTargetPosition((int) Elbow4Turn);
+                            robot.Elbow4.setPower(-1);
+                            robot.Elbow4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            robot.Elbow4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            while (robot.Elbow4.isBusy()) {
+                                telemetry.addData("Arm Position", robot.Elbow4.getTargetPosition());
+                                telemetry.update();
+                                idle();
+                            }
+                            robot.Elbow4.setPower(0);
+                            robot.Elbow4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                            double Elbow2Turn_1 = Elbow2TickCount * 40;
+                            int newTargetElbow2_1 = (int) Elbow2Turn_1;
+                            robot.Elbow2.setTargetPosition(newTargetElbow2_1);
+                            robot.Elbow2.setPower(1);
+                            robot.Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            robot.Elbow2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            while (opModeIsActive() && robot.Elbow2.isBusy()) {
+                                telemetry.addData("In side While Arm Position", robot.Elbow2.getTargetPosition());
+                                telemetry.update();
+                                idle();
+                            }
+
+                            robot.Elbow2.setPower(0);
+                            robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+                            sleep(100);
+                            //move forward a little
+                            robot.Forward(1);
+                            sleep(75);
+
+                            // closing gripper
+                            robot.Gripper(-1);
+                            sleep(1000);
+
+                            // lift up elbow 4
+                            robot.Elbow4.setTargetPosition(-(int) Elbow4Turn);
+                            robot.Elbow4.setPower(1);
+                            robot.Elbow4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            robot.Elbow4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                            while (robot.Elbow4.isBusy()) {
+                                telemetry.addData("Arm Position", robot.Elbow4.getTargetPosition());
+                                telemetry.update();
+                                idle();
+                            }
+
+                            robot.Elbow4.setPower(0);
+                            robot.Elbow4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                            //b pos
+                            double Elbow2Turn_2 = Elbow2TickCount * 170;
+                            int newTargetElbow2_2 = (int) Elbow2Turn_2;
+                            robot.Elbow2.setTargetPosition(-newTargetElbow2_2);
+                            robot.Elbow2.setPower(-1);
+                            robot.Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                            robot.Elbow2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                            while (opModeIsActive() && robot.Elbow2.isBusy()) {
+                                telemetry.addData("In side While Arm Position", robot.Elbow2.getTargetPosition());
+                                telemetry.update();
+                                idle();
+                            }
+
+                            robot.Elbow2.setPower(0);
+                            robot.Elbow2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                            if(placeholder > 0){
+                                placeholder-=1;
+                                robot.Slide_Right((float) 0.25);
+                                sleep(200);
+                                robot.Left((float) 0.1);
+                                sleep(10);
+                                robot.Stop();
+                                sleep(100);
+
+
+                            }
+
+                            robot.Gripper(1);
+                            sleep(900);
+                            robot.Slide_Left((float) 0.25);
+                            sleep(200);
+                            robot.Right((float) 0.1);
+                            sleep(10);
+                            robot.Stop();
+                            sleep(100);
+                            break;
+
+
+
+
+
+
+
                         }
 
+
+                        telemetry.update();
                     }
                 }
-
-                telemetry.update();
+                // Disable Tracking when we are done;
+                robot.targetsSkyStone.deactivate();
             }
-            // Disable Tracking when we are done;
-            robot.targetsSkyStone.deactivate();
         }
     }
-}
 
+}

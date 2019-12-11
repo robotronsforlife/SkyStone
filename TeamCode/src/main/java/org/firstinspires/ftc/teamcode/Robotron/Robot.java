@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Robotron;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -115,10 +117,15 @@ public class Robot {
 
     private HardwareMap hardwareMap;
 
-    public void Init(HardwareMap hardwareMap, Telemetry telemetry)
+    private boolean autonomous = false;
+
+    public int State = 0;
+
+    public void Init(HardwareMap hardwareMap, Telemetry telemetry, boolean autonomous)
     {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
+        this.autonomous = autonomous;
 
         //Initialize IMU hardware map value.
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -198,8 +205,11 @@ public class Robot {
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseLeftEncoder();
 
-        InitCamera();
+       if (this.autonomous == true){
+           InitCamera();
+       }
     }
+
 
     private void InitCamera()
     {
@@ -367,7 +377,7 @@ public class Robot {
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
         final float CAMERA_FORWARD_DISPLACEMENT = 4.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 8.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_VERTICAL_DISPLACEMENT = 2.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT = 0;     // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
