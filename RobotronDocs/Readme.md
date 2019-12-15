@@ -7,4 +7,6 @@
  - [Wire Management](WireManagement.md)
  - [Building Site Puller Design](BuildingSitePuller.md)
  - [Expansion Hub Port assignments](PortAssignments.md)
+ - [Arm design](RobotArm.md)
+  
 
