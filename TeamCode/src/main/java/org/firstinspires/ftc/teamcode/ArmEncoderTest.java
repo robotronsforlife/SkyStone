@@ -17,7 +17,7 @@ public class ArmEncoderTest extends LinearOpMode {
     public void runOpMode() {
 
         robot = new Robot();
-        robot.Init(hardwareMap, telemetry);
+        robot.Init(hardwareMap, telemetry, false);
 
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();

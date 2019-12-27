@@ -27,7 +27,7 @@ public class ArmAutonomousTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Elbow3 = hardwareMap.dcMotor.get("Elbow3");
-        robot.Init(hardwareMap, telemetry);
+        robot.Init(hardwareMap, telemetry,false);
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
         waitForStart();

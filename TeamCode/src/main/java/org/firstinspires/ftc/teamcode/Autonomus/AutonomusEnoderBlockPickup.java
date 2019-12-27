@@ -18,7 +18,7 @@ public class AutonomusEnoderBlockPickup extends LinearOpMode {
     public void runOpMode() {
 
         robot = new Robot();
-        robot.Init(hardwareMap, telemetry);
+        robot.Init(hardwareMap, telemetry, true);
 
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
