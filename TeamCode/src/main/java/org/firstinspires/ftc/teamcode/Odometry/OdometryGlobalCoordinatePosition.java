@@ -33,7 +33,7 @@ public class OdometryGlobalCoordinatePosition implements Runnable{
     private File wheelBaseSeparationFile = AppUtil.getInstance().getSettingsFile("wheelBaseSeparation.txt");
     private File horizontalTickOffsetFile = AppUtil.getInstance().getSettingsFile("horizontalTickOffset.txt");
 
-    private int verticalLeftEncoderPositionMultiplier = 1;
+    private int verticalLeftEncoderPositionMultiplier = -1;
     private int verticalRightEncoderPositionMultiplier = 1;
     private int normalEncoderPositionMultiplier = 1;
 
@@ -104,6 +104,15 @@ public class OdometryGlobalCoordinatePosition implements Runnable{
      */
     public double returnOrientation(){ return Math.toDegrees(robotOrientationRadians) % 360; }
 
+    public int GetLeftVerticalEncoderPosition()
+    {
+        return (verticalEncoderLeft.getCurrentPosition() * verticalLeftEncoderPositionMultiplier);
+    }
+
+    public int GetRightVerticalEncoderPosition()
+    {
+        return (verticalEncoderRight.getCurrentPosition() * verticalRightEncoderPositionMultiplier);
+    }
     /**
      * Stops the position update thread
      */

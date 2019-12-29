@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.Robotron;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -38,7 +36,7 @@ public class Robot {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = false;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -57,8 +55,8 @@ public class Robot {
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmPerInch = 25.4f;
+    private static final float mmTargetHeight = (6) * mmPerInch;          // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -72,7 +70,7 @@ public class Robot {
 
     // Constants for perimeter targets
     private static final float halfField = 72 * mmPerInch;
-    private static final float quadField  = 36 * mmPerInch;
+    private static final float quadField = 36 * mmPerInch;
 
     // Class Members
     private VuforiaLocalizer vuforia = null;
@@ -83,11 +81,16 @@ public class Robot {
      */
     WebcamName webcamName = null;
     public VuforiaTrackables targetsSkyStone;
+    public VuforiaTrackable stoneTarget;
 
-    private float phoneXRotate    = 0;
-    private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    private float phoneXRotate = 0;
+    private float phoneYRotate = 0;
+    private float phoneZRotate = 0;
 
+    private static final double Elbow1TickCount = 5264 * 2;
+    private static final double Elbow2TickCount = (5264 * 2) / 360;
+    private static final double Elbow3TickCount = 5264 * 2;
+    private static final double Elbow4TickCount = (2786 * 2) / 360;
 
     public DcMotor Right_Front_Wheel;
     public DcMotor Left_Front_Wheel;
@@ -110,6 +113,9 @@ public class Robot {
     private CRServo Grip_Servo;
     private CRServo Turn_Servo;
 
+    private CRServo Left_Block;
+    private CRServo Right_Block;
+
     //IMU Sensor
     private BNO055IMU imu;
 
@@ -117,15 +123,14 @@ public class Robot {
 
     private HardwareMap hardwareMap;
 
-    private boolean autonomous = false;
+    private boolean initializeCamera = false;
 
     public int State = 0;
 
-    public void Init(HardwareMap hardwareMap, Telemetry telemetry, boolean autonomous)
-    {
+    public void Init(HardwareMap hardwareMap, Telemetry telemetry, boolean initializeCamera) {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
-        this.autonomous = autonomous;
+        this.initializeCamera = initializeCamera;
 
         //Initialize IMU hardware map value.
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -175,15 +180,18 @@ public class Robot {
         Right_Front_Wheel.setDirection(DcMotorSimple.Direction.REVERSE);
         Right_Rear_Wheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        Elbow1=hardwareMap.dcMotor.get("Elbow1");
-        Elbow2=hardwareMap.dcMotor.get("Elbow2");
-        Elbow3=hardwareMap.dcMotor.get("Elbow3");
-        Elbow4=hardwareMap.dcMotor.get("Elbow4");
+        Elbow1 = hardwareMap.dcMotor.get("Elbow1");
+        Elbow2 = hardwareMap.dcMotor.get("Elbow2");
+        Elbow3 = hardwareMap.dcMotor.get("Elbow3");
+        Elbow4 = hardwareMap.dcMotor.get("Elbow4");
 
         Right_Puller = hardwareMap.crservo.get("Right_Puller");
         Left_Puller = hardwareMap.crservo.get("Left_Puller");
         Turn_Servo = hardwareMap.crservo.get("Turn_Servo");
         Grip_Servo = hardwareMap.crservo.get("Grip_Servo");
+
+        Left_Block = hardwareMap.crservo.get("Left_Block");
+        Right_Block = hardwareMap.crservo.get("Right_Block");
 
 /*        Elbow1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Elbow2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -205,14 +213,13 @@ public class Robot {
         globalPositionUpdate.reverseRightEncoder();
         globalPositionUpdate.reverseLeftEncoder();
 
-       if (this.autonomous == true){
-           InitCamera();
-       }
+        if (this.initializeCamera == true) {
+            InitCamera();
+        }
     }
 
 
-    private void InitCamera()
-    {
+    private void InitCamera() {
         /*
          * Retrieve the camera we are to use.
          */
@@ -242,7 +249,7 @@ public class Robot {
         // sets are stored in the 'assets' part of our application.
         targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
-        VuforiaTrackable stoneTarget = targetsSkyStone.get(0);
+        stoneTarget = targetsSkyStone.get(0);
         stoneTarget.setName("Stone Target");
         VuforiaTrackable blueRearBridge = targetsSkyStone.get(1);
         blueRearBridge.setName("Blue Rear Bridge");
@@ -392,147 +399,185 @@ public class Robot {
         targetsSkyStone.activate();
     }
 
-    public float GetRobotYaw_Angle()
-    {
+    public float GetRobotYaw_Angle() {
         // get gyro's yaw angle
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
     }
 
-    public BNO055IMU.CalibrationStatus GetRobotGyroCalibrationStatus()
-    {
+    public BNO055IMU.CalibrationStatus GetRobotGyroCalibrationStatus() {
         return imu.getCalibrationStatus();
     }
 
-    public BNO055IMU.SystemStatus GetRobotGyroSystemStatus()
-    {
+    public BNO055IMU.SystemStatus GetRobotGyroSystemStatus() {
         return imu.getSystemStatus();
     }
 
-    public boolean IsRobotGyroCalibrated()
-    {
+    public boolean IsRobotGyroCalibrated() {
         telemetry.addData("IMU Calibration Status", imu.getCalibrationStatus());
         telemetry.addData("Gyro Calibrated", imu.isGyroCalibrated() ? "True" : "False");
         telemetry.addData("System Status", imu.getSystemStatus().toString());
         return imu.isGyroCalibrated();
     }
 
-    public void StopRobot()
-    {
+    public int GetLeftVerticalEncoderTicks() {
+        return this.globalPositionUpdate.GetLeftVerticalEncoderPosition();
+    }
+
+    public int GetRightVerticalEncoderTicks(){
+        return this.globalPositionUpdate.GetRightVerticalEncoderPosition();
+    }
+
+    public int GetNormalEncoderTicks() {
+        return this.horizontal.getCurrentPosition();
+    }
+
+    public void StopRobot() {
         //Stop the thread
         globalPositionUpdate.stop();
     }
 
-    public void Stop(){
+    public void Stop() {
         Left_Front_Wheel.setPower(0);
-        Left_Rear_Wheel.setPower(0);
         Right_Front_Wheel.setPower(0);
+        Left_Rear_Wheel.setPower(0);
         Right_Rear_Wheel.setPower(0);
     }
 
-    public void Forward(float power){
+    public void Forward(float power) {
         Left_Front_Wheel.setPower(power);
-        Left_Rear_Wheel.setPower(power);
         Right_Front_Wheel.setPower(power);
         Right_Rear_Wheel.setPower(power);
+        Left_Rear_Wheel.setPower(power);
     }
 
-    public void Reverse(float power){
+    public void Reverse(float power) {
         Left_Front_Wheel.setPower(power * -1);
-        Left_Rear_Wheel.setPower(power * -1);
         Right_Front_Wheel.setPower(power * -1);
         Right_Rear_Wheel.setPower(power * -1);
+        Left_Rear_Wheel.setPower(power * -1);
     }
 
-    public void Right(float power){
+    public void Right(float power) {
         Left_Front_Wheel.setPower(power);
         Right_Front_Wheel.setPower(power * -1);
-        Left_Rear_Wheel.setPower(power);
         Right_Rear_Wheel.setPower(power * -1);
+        Left_Rear_Wheel.setPower(power);
+
     }
 
-    public void Left(float power){
+    public void Left(float power) {
         Left_Front_Wheel.setPower(power * -1);
         Right_Front_Wheel.setPower(power);
-        Left_Rear_Wheel.setPower(power * -1);
         Right_Rear_Wheel.setPower(power);
+        Left_Rear_Wheel.setPower(power * -1);
+
     }
 
-    public void Diagonal_Right_Up(float power){
+    public void Diagonal_Right_Up(float power) {
         Left_Front_Wheel.setPower(power);
         Right_Front_Wheel.setPower(0);
-        Left_Rear_Wheel.setPower(0);
         Right_Rear_Wheel.setPower(power);
+        Left_Rear_Wheel.setPower(0);
+
     }
 
-    public void Diagonal_Left_Down(float power){
+    public void Diagonal_Left_Down(float power) {
         Left_Front_Wheel.setPower(power * -1);
         Right_Front_Wheel.setPower(0);
-        Left_Rear_Wheel.setPower(0);
         Right_Rear_Wheel.setPower(power * -1);
+        Left_Rear_Wheel.setPower(0);
+
     }
 
-    public void Diagonal_Right_Down(float power){
+    public void Diagonal_Right_Down(float power) {
         Left_Front_Wheel.setPower(0);
         Right_Front_Wheel.setPower(power * -1);
-        Left_Rear_Wheel.setPower(power);
         Right_Rear_Wheel.setPower(0);
+        Left_Rear_Wheel.setPower(power);
+
     }
 
-    public void Diagonal_Left_Up(float power){
+    public void Diagonal_Left_Up(float power) {
         Left_Front_Wheel.setPower(0);
         Right_Front_Wheel.setPower(power);
-        Left_Rear_Wheel.setPower(power);
         Right_Rear_Wheel.setPower(0);
+        Left_Rear_Wheel.setPower(power);
     }
 
-    public void Slide_Right(float power){
+    public void Slide_Right(float power) {
         Left_Front_Wheel.setPower(power);
         Right_Front_Wheel.setPower(power * -1);
-        Left_Rear_Wheel.setPower(power * -1);
         Right_Rear_Wheel.setPower(power);
+        Left_Rear_Wheel.setPower(power * -1);
+
     }
 
-    public void Slide_Left(float power){
+    public void Slide_Left(float power) {
         Left_Front_Wheel.setPower(power * -1);
         Right_Front_Wheel.setPower(power);
-        Left_Rear_Wheel.setPower(power);
         Right_Rear_Wheel.setPower(power * -1);
+        Left_Rear_Wheel.setPower(power);
     }
 
-    public void LeftPuller(double power)
-    {
+    public void LeftBlockGrabber(double power) {
+        Left_Block.setPower(power);
+    }
+
+    public void RightBlockGrabber(double power) {
+        Right_Block.setPower(power);
+    }
+
+    public void LeftPuller(double power) {
         Left_Puller.setPower(power);
     }
 
-    public void RightPuller(double power)
-    {
+    public void RightPuller(double power) {
         Right_Puller.setPower(power);
     }
 
-    public void Gripper(double power)
-    {
+    public void Gripper(double power) {
         Grip_Servo.setPower(power);
     }
 
-    public void TurnGripper(double power)
-    {
+    public void TurnGripper(double power) {
         Turn_Servo.setPower(power);
     }
 
-    public void MoveElbow1(double power)
-    {
+    public void MoveElbow1(double power) {
         Elbow1.setPower(power);
     }
 
-    public void MoveElbow2(double power){
+    public void MoveElbow2(double power) {
         Elbow2.setPower(power);
     }
 
-    public void MoveElbow3(double power){
+    public void MoveElbow3(double power) {
         Elbow3.setPower(power);
     }
 
-    public void MoveElbow4(double power){
+    public void MoveElbow4(double power) {
         Elbow4.setPower(power);
+    }
+
+    public void TurnElbow4ByDegrees(int degrees, boolean needToWait) {
+
+        double Elbow4Turn = Elbow4TickCount * degrees;
+        Elbow4.setTargetPosition((int) Elbow4Turn);
+
+        if (degrees > 0) {
+            Elbow4.setPower(1);
+        } else {
+            Elbow4.setPower(-1);
+        }
+
+        Elbow4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Elbow4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if (needToWait == true) {
+            while (Elbow4.isBusy()) {
+                telemetry.addData("Arm Position", Elbow4.getTargetPosition());
+                telemetry.update();
+            }
+        }
     }
 }

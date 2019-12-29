@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomus;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TfodSkyStone;
 
 @Autonomous(name = "SeekSkystoneA ", group = "")
+@Disabled
 public class SeekSkystone extends LinearOpMode {
 
     private DcMotor Left_Front_Motor;

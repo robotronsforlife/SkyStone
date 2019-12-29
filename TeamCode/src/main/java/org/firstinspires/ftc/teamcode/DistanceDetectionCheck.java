@@ -101,7 +101,7 @@ public class DistanceDetectionCheck extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Robot();
-        robot.Init(hardwareMap, telemetry, false);
+        robot.Init(hardwareMap, telemetry, true);
 
         // WARNING:
         // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
