@@ -8,7 +8,6 @@
  - [Building Site Puller Design](BuildingSitePuller.md)
  - [Expansion Hub Port assignments](PortAssignments.md)
  - [Arm design](RobotArm.md)
- - [Using Camera](UsingCamera.md)
- - [Side Panels](SidePanels.md)
+ 
   
 
