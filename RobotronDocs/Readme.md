@@ -17,7 +17,7 @@
 
 ## Programming Design ##
  - [Robot Class](RobotClass.md)
- - [TeleOps](Teleops.md)
+ - [TeleOps](TeleOps.md)
  - [Autonomous](Autonomous.md)
 
 ## Game Strategy ##
