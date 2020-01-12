@@ -1,2 +1,2 @@
-#Block Grabber Servos 
+# Block Grabber Servos #
 We decided that our stacking arm was too slow to pick up blocks effectively so right after our second practice competition we decided to make block grabber servos that functioned similarly to our base mover servos. However our base mover servos are way smaller and slower because they were built for stability. Our block grabber servos stretch out farther so that they can grab the blocks and slide them across the bridge. 
