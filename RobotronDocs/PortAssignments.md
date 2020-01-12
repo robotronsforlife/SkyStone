@@ -1,7 +1,7 @@
 # Port Assignments #
 Here is a list of the ports on the Ports on the Expansion Hub:
 
-## Expansion Hub 1##
+## Expansion Hub 1 ##
 ### Motors ###
 Here is where all of the base motors have been connected
 
