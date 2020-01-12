@@ -14,7 +14,6 @@
  - [Block Grabber](BlockGrabber.md)
  - [Grip](Grip.md)
  - [Port Assignments](PortAssignments.md)
- - [Robot Arm](RobotArm.md)
 
 ## Programming Design ##
  - [Robot Class](RobotClass.md)

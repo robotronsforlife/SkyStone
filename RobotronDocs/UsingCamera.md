@@ -1,6 +1,6 @@
-#Using Camera#
+# Using Camera #
 
-## Camera placement##
+## Camera placement ##
 For autonomous we are using our camera to detect blocks. We decided to place our camera in the front center of the robot, at the bottom. We placed it in the center because then we wouldn't have to do extra programming so that the center of the robot was facing the center of the block. We put it at the bottom front because then the camera would be in a straight line from the block, and the proportions of the block wouldn't be messed up in the camera. Ex: selfies. When we take selfies we hold it at an angle above us, and even though our faces seem normal sized our bodies seem way smaller than normal. Since we don't want our blocks proportions to be like this we kept the camera directly in front of the block instead of at the top. Also keeping the camera near the bottom of the robot helped effectively conserve space.
-## Vuforia Detection##
+## Vuforia Detection ##
 We used Vuforia to program our camera. Vuforia is an augmented reality software development kit (SDK) for mobile devices that uses computer vision technology to recognize and track Image Targets in real time. [Know more about Vuforia.](https://firstroboticsbc.org/wp-content/uploads/2018/10/Introduction-to-Vuforia.pdf) We used vuforia in our program to detect the skystone block once our robot got close to it. The sample program we added onto also gave the x, y, and z position of the block. We used this to make sure the robot was the optimal position in front of the block. In our case the optimal position is about 15 inches behind the block, and directly in the center of the block, so that we can grab it with our arm. See Arm section.
