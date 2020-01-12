@@ -10,7 +10,7 @@
  - [Using Camera](UsingCamera.md)
  - [Side Panel](SidePanels.md)
  - [Power Management](PowerManagement.md)
- - [3D Printed Parts](3dPrintedParts.md)
+ - [3D Printed Parts](3DPrintedParts.md)
  - [Block Grabber](BlockGrabber.md)
  - [Grip](Grip.md)
  - [Port Assignments](PortAssignments.md)
