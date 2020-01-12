@@ -11,11 +11,3 @@ We made our numbers 3 inches tall and 0.5 inches wide so they would be easy to r
 ## Alliance Markers ##
 
 We decided to place our alliance markers on the corners of the side plates closest to the back. 
-
-
-
-
-
-
-
-NOW WHAT                 
